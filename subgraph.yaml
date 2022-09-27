@@ -1,0 +1,26 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: SpotifyWeb3
+    network: goerli
+    source:
+      address: "0xffAfC83bbcdc4d70534e1788B19480f64d97E0D9"
+      abi: SpotifyWeb3
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - AlbumAdded
+        - OwnershipTransferred
+      abis:
+        - name: SpotifyWeb3
+          file: ./abis/SpotifyWeb3.json
+      eventHandlers:
+        - event: AlbumAdded(uint256,indexed address,indexed address,uint32,uint256,string)
+          handler: handleAlbumAdded
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/spotify-web-3.ts
