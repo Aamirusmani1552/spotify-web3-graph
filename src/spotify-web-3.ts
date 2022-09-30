@@ -1,53 +1,17 @@
-import { BigInt } from "@graphprotocol/graph-ts"
-import {
-  SpotifyWeb3,
-  AlbumAdded,
-  OwnershipTransferred
-} from "../generated/SpotifyWeb3/SpotifyWeb3"
-import { ExampleEntity } from "../generated/schema"
+import { BigInt } from "@graphprotocol/graph-ts";
+import { AlbumAdded } from "../generated/SpotifyWeb3/SpotifyWeb3";
+import { Album as AlbumEntity } from "../generated/schema";
 
 export function handleAlbumAdded(event: AlbumAdded): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+  const Album = new AlbumEntity(event.params.id.toHex());
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+  Album.id = event.transaction.hash.toHex();
+  Album.albumAddress = event.params.albumAddress;
+  Album.albumId = event.params.id;
+  Album.owner = event.params.owner;
+  Album.songsCount = event.params.songsCount;
+  Album.timeStamp = event.params.timeStamp;
+  Album.albumName = event.params.albumName;
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
-
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.id = event.params.id
-  entity.owner = event.params.owner
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.getAlbumById(...)
-  // - contract.getAlbumCount(...)
-  // - contract.owner(...)
+  Album.save();
 }
-
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {}

@@ -1,6 +1,9 @@
-type ExampleEntity @entity {
+type Album @entity {
   id: ID!
-  count: BigInt!
-  id: BigInt! # uint256
-  owner: Bytes! # address
+  albumId: BigInt!
+  owner: Bytes!
+  albumAddress: Bytes!
+  songsCount: BigInt!
+  timeStamp: BigInt!
+  albumName: String!
 }
